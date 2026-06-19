@@ -209,6 +209,11 @@
         </div>
 
     <script>
+        const pass = prompt("Enter password:");
+              if (pass !== "190601520") {
+                    document.body.innerHTML = "Access denied";
+              }
+        
         let selectedplan= "";
 
         function showScene(num){
