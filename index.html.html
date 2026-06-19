@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Everlyn's Birthday</title>
+    </head>
+
+    <style>
+        body{
+            cursor:url("ocean.png"), auto;
+            margin: 0;
+            font-family: "Segoe Script", cursive;
+            background: linear-gradient(135deg, #ffe6f0, #fff7f0, #f3e8ff);
+            color: #333;
+        }
+
+        .scene{
+            display: none;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+            animation: fadein 1s ease;
+        }
+
+        .scene.opening{
+            display:flex;
+        }
+
+        .gift{
+            width: 300px;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.5s;
+        }
+
+        button{
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background: #ff7aa2;
+            color: white;
+            font-size: 16px;
+            cursor: url("ocean.png"), auto;
+            margin-top: 15px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 122, 162, 0.3);
+        }
+
+        button:hover{
+            transform: scale(1.05);
+            backgorund:#ff4f86;
+        }
+
+        button:disabled{
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        ul{
+                list-style: none;
+                padding: 0;
+            }
+
+            li{
+                position: relative;
+                padding-left: 30px;
+                margin: 10px 0;
+            }
+
+            li::before{
+                content:"";
+                position: absolute;
+                left: -10px;
+                top: -10px;
+                width: 40px;
+                height:40px;
+                background: url("stormii.png") no-repeat center;
+                background-size: contain;
+            }
+
+        .modal{
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modalcontent{
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .cardbox{
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card{
+            width: 250px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: url("ocean.png"), auto;
+            transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .card img{
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .cardcontent{
+            padding: 15px;
+        }
+
+        .card.selected{
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ff7aa2;
+        }
+    </style>
+
+    <body>
+        <!--Scene 1--> 
+        <div class="scene opening" id="scene1">
+            <h1>It's almost your birthday! Happy Birthday Everlyn!❤️🎁</h1>
+            <img class="gift" src="giftbox.png">
+            <button onclick="opengift()">Open!</button>
+
+            <audio id="music" src="music1.MP3"></audio>
+        </div>
+
+        <!--Scene 2--> 
+        <div class="scene" id="scene2">
+            <h1>Before we start our beuatiful week, we must strictly follow these rules: </h1>
+            
+            <ul>
+                <li>Food and happiness first, diet second😝 (bulanlimabe)</li>
+                <li>Take lotsss  of picture📸</li>
+                <li>Stress less, smile more😊</li>
+            </ul>
+            
+            <button onclick="agree()">Agree❤️</button>
+            <button onclick="disagree()">Disagree😝</button>
+        </div>
+
+        <!--Modal--> 
+        <div class="modal" id="modal">
+            <div class="modalcontent">
+                <p>Wrong answer. Try again😝</p>
+                <button onclick="closeModal()">Try again😭</button>
+            </div>
+            
+        </div>
+
+        <!--Scene 3--> 
+        <div class="scene" id="scene3">
+            <h1>To celebrate your birthday, I am inviting you to a date! Choose your destination. (Tentatively 22/6 Monday)</h1>
+            <h3>Choose your destination</h3>
+
+            <div class="cardbox">
+                <div class="card" onclick="selectCard(this, 'Terengganu')">
+                    <img src="terengganu.jpg">
+                    <div class="cardcontent">
+                        <h3>1 Day trip to Terengganu🐟</h3>
+                        <p>Your first time visiting Terengganu!</p>
+                    </div>
+                </div>
+            
+                <div class="card" onclick="selectCard(this, 'Kelantan')">
+                    <img src="kelantan.png">
+                    <div class="cardcontent">
+                        <h3>Chill around Kelantan</h3>
+                        <p>Places you've never seen before</p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="choosebutton" disabled onclick="nextScene()">This one🥳</button>
+        </div>
+
+        <!--Scene 4-->
+        <div class="scene" id="scene4">
+            <h1>It's a date❤️</h1>
+            <img src = "kttrip.png">
+            <h3>Can't wait to spend your birthday with you, my sunshine☀️</h3>
+        </div>
+
+        <!--Scene 5-->
+        <div class="scene" id="scene5">
+            <h1>It's a date❤️</h1>
+            <h3>Can't wait to spend your birthday with you, my sunshine☀️</h3>
+            <p>The itinerary will be sent to you soon!</p>
+        </div>
+
+    <script>
+        let selectedplan= "";
+
+        function showScene(num){
+            document.querySelectorAll(".scene").forEach(s => s.classList.remove("opening"));
+            document.getElementById("scene" + num).classList.add("opening");
+        }
+
+        /*function nextScene(num){
+            showScene(num);
+        }*/
+
+        function opengift(){
+            showScene(2);
+            document.getElementById("music").play();
+        }
+
+        function agree(){
+            showScene(3);
+        }
+
+        function disagree(){
+            document.getElementById("modal").style.display = "flex";
+        }
+
+        function closeModal(){
+            document.getElementById("modal").style.display = "none";
+        }
+
+        function selectCard(el, plan){
+            document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+            el.classList.add("selected");
+
+            selectedPlan= plan;
+            document.getElementById("choosebutton").disabled = false;
+        }
+
+        function nextScene(){
+            if(selectedPlan === "Terengganu"){
+                showScene(4)
+            }
+
+            if(selectedPlan === "Kelantan"){
+                showScene(5)
+            }
+        }
+    </script>
+
+    </body>
+
+
+
+
+
+</html>
